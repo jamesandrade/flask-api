@@ -3,36 +3,29 @@ from __main__ import app
 from flask import Flask, request, jsonify, Response
 import json
 
-from src.modules.users.models.user import User
-from app import db
-import cryptocode
+from src.modules.users.services.createUserService import createUserService  
+from src.modules.users.services.showUserService import showUserService  
+from src.modules.users.services.destroyUserService import destroyUserService  
 
 #feat: login required for this
 @app.route('/user/<user_id>', methods=['GET', 'DELETE'])
 def getOrDelete(user_id):
     if request.method == 'GET':
-        user = User.query.filter_by(id=user_id).first()
-    
-        userResponse = {
-                    'username':user.username,
-                    'email':user.email,
-                    'phone':user.phone
-                    }
+        userResponse = showUserService.execute(user_id)
+        if userResponse:
+            return json.dumps(userResponse)
 
-        userResponse = json.dumps(userResponse)
-        return userResponse
+        return Response(status=400)
+
     else:
-        try:
-            user = User.query.filter_by(id=user_id).first()
-            db.session.delete(user)
-            db.session.commit()
+        res = destroyUserService.execute(user_id)
+        if res:
             return Response(status=200)
-        except:
+        else:
             return Response(status=400)
 
 @app.route('/user', methods=['POST', 'PUT','PATCH', 'DELETE'])
 def user():
-    #feat: construct function, verify if alread Exists
     if request.method == 'POST':
         content = request.json
         username = content.get('username')
@@ -40,13 +33,13 @@ def user():
         phone = content.get('phone')
         password = content.get('password')
 
-        hashedPassword = cryptocode.encrypt(password, "wow")
-        newUser = User(username=username,
-                  email=email,
-                  phone=phone,
-                  password=hashedPassword)
-        db.session.add(newUser)
-        db.session.commit()
+        newUser = createUserService.execute(username=username,
+                                            email=email,
+                                            phone=phone,
+                                            password=password
+                                            )
 
-        return jsonify(request.json)
-    
+        if newUser:
+            return json.dumps(newUser)
+
+        return Response(status=400)

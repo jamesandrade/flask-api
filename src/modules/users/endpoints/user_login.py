@@ -1,11 +1,8 @@
 from __main__ import app
-from flask import Flask, request, jsonify, Response
+from flask import Flask, request, Response, make_response, jsonify
 import json
-import jwt
-import cryptocode
-from cryptography.hazmat.primitives import serialization
-from src.modules.users.models.user import User
-from app import db
+from src.modules.users.services.authenticateUserService import authenticateUserService  
+
 
 
 @app.route('/login', methods=['POST'])
@@ -14,27 +11,9 @@ def login():
         content = request.json
         email = content.get('email')
         password = content.get('password')
-
-        user = User.query.filter_by(email=email).first()
+        userResponse = authenticateUserService.execute(email=email, password=password)
         
-        if user is None:
-            return Response(status=400)
+        if userResponse:
+            return make_response(jsonify(token=userResponse), 200)
 
-        if cryptocode.decrypt(user.password, "wow") != password:
-            return Response(status=400)
-        
-        ## JWT 
-        payload_data = {
-            "sub": str(user.id),
-            "username": user.username,
-        }
-
-        private_key = open('gen', 'r').read()
-        key = serialization.load_ssh_private_key(private_key.encode(), password=b'flask-api')
-
-        token = jwt.encode(
-                           payload=payload_data,
-                           key=key,
-                           algorithm='RS256'
-                        )
-        return jsonify(token=token)
+        return Response(status=400)
