@@ -1,6 +1,6 @@
 import cryptocode
 from cryptography.hazmat.primitives import serialization
-
+from datetime import datetime, timedelta, timezone
 import jwt
 from app import db
 
@@ -24,6 +24,7 @@ class AuthenticateUserService():
             ## JWT 
             payload_data = {
                 "sub": str(user.id),
+                "exp": datetime.now(tz=timezone.utc) + timedelta(days=14),
                 "username": user.username,
             }
 
