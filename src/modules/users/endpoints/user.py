@@ -5,6 +5,7 @@ import json
 
 from src.modules.users.models.user import User
 from app import db
+import cryptocode
 
 #feat: login required for this
 @app.route('/user/<user_id>', methods=['GET', 'DELETE'])
@@ -39,10 +40,11 @@ def user():
         phone = content.get('phone')
         password = content.get('password')
 
+        hashedPassword = cryptocode.encrypt(password, "wow")
         newUser = User(username=username,
                   email=email,
                   phone=phone,
-                  password=password)
+                  password=hashedPassword)
         db.session.add(newUser)
         db.session.commit()
 
