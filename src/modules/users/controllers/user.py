@@ -2,13 +2,16 @@
 from __main__ import app
 from flask import Flask, request, jsonify, Response
 import json
+from flask_jwt_extended import jwt_required
 
+from src.middlewares.login import me_required
 from src.modules.users.services.createUserService import createUserService  
 from src.modules.users.services.showUserService import showUserService  
 from src.modules.users.services.destroyUserService import destroyUserService  
 
-#feat: login required for this
 @app.route('/user/<user_id>', methods=['GET', 'DELETE'])
+@jwt_required()
+@me_required()
 def getOrDelete(user_id):
     if request.method == 'GET':
         userResponse = showUserService.execute(user_id)

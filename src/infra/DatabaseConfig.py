@@ -1,4 +1,4 @@
-class Database():
+class DatabaseConfig():
 
     def init(app):
         app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://docker:docker@localhost/flask-postgres'

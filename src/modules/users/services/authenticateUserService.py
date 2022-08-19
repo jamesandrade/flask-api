@@ -1,44 +1,27 @@
 import cryptocode
 from cryptography.hazmat.primitives import serialization
-from datetime import datetime, timedelta, timezone
-import jwt
-from app import db
-
+from datetime import timedelta
 from __main__ import app
-from src.modules.users.models.user import User
-from app import db
 
+from flask import jsonify
+from src.modules.users.models.user import User
+
+from app import db
+from flask_jwt_extended import create_access_token
 class AuthenticateUserService():
     def execute(self, email, password):
-        try:
-            user = User.query.filter_by(email=email).first()
+        user = User.query.filter_by(email=email).first()
 
-            if user is None:
-                print("aqui")
-                return False
+        if user is None:
+           return False
 
-            if cryptocode.decrypt(user.password, "wow") != password:
-                print("aq2")
-                return False
-
-            ## JWT 
-            payload_data = {
-                "sub": str(user.id),
-                "exp": datetime.now(tz=timezone.utc) + timedelta(days=14),
-                "username": user.username,
-            }
-
-            private_key = open('gen', 'r').read()
-            key = serialization.load_ssh_private_key(private_key.encode(), password=b'flask-api')
-
-            token = jwt.encode(
-                                payload=payload_data,
-                                key=key,
-                                algorithm='RS256'
-                              )
-        except:
+        if cryptocode.decrypt(user.password, "wow") != password:
             return False
 
-        return token
+        access_token = create_access_token(identity=user.id,
+                                           expires_delta= timedelta(days=15)
+                                           )
+        
+        return jsonify(token=access_token)
 
 authenticateUserService = AuthenticateUserService()
