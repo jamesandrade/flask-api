@@ -1,0 +1,35 @@
+version: '3'
+services:
+    flask-postgres:
+        image: postgres
+        restart: always
+        environment:
+            - POSTGRES_HOST=127.0.0.1
+            - POSTGRES_USER=root
+            - POSTGRES_PASSWORD=password
+            - APP_DB_USER=docker
+            - APP_DB_PASS=docker
+            - APP_DB_NAME=docker
+        volumes:
+            - apiDB:/var/lib/postgresql/data
+        ports:
+            - 5432:5432
+        networks:
+            - database-network
+
+    backend:
+        build: .
+        ports:
+            - "5000:5000"
+        volumes:
+            - .:/code
+        depends_on:
+            - flask-postgres 
+        networks:
+            - database-network
+networks:
+    database-network:
+        driver: bridge
+        external: false             
+volumes: 
+    apiDB:

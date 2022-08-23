@@ -68,8 +68,6 @@ Before starting :checkered_flag:, you need to have [Git](https://git-scm.com), [
 ## :checkered_flag: Starting ##
 
 ```bash
-# Install all dependences
-$ pip install -r requirements.txt
 
 # Clone this project
 $ git clone https://github.com/jamesandrade/flask-api

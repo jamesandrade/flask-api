@@ -1,6 +1,5 @@
 from flask import Flask
 #from flask_restx import Api
-from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from sqlalchemy import Column, Integer, String
@@ -21,9 +20,6 @@ jwt = JWTManager(app)
 import src.modules.registerModels 
 
 if __name__ == "__main__":
-    
-    
-    CORS(app)
     #import all routes
     import src.modules.registerRoutes
     app.run(debug=True)
