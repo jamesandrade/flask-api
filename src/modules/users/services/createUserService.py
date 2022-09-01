@@ -1,24 +1,19 @@
 import cryptocode
-
 from __main__ import app
 from src.modules.users.models.user import User
 from app import db
+from sqlalchemy import exc
 
 class CreateUserService():
-    def execute(self, username, email, phone, password):
+    def execute(self, data):
+        hashedPassword = cryptocode.encrypt(data.get('password'), "wow")
+        data["password"] = hashedPassword
         try:
-
-            hashedPassword = cryptocode.encrypt(password, "wow")
-            newUser = User(username=username,
-                           email=email,
-                           phone=phone,
-                           password=hashedPassword
-                           )
-
+            newUser = User(**data)
             db.session.add(newUser)
             db.session.commit()
-
-        except:
+        except exc.IntegrityError:
+            db.session.rollback()
             return False
         
         userResponse = {

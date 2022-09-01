@@ -1,9 +1,18 @@
 version: '3.8'
+networks:
+  my-network:
+    external: true
 
 services:
-  backend:
+  api:
     build: .
     command: python app.py
+    ports: 
+      - 5000:5000
+    volumes:
+      - .:/api
+    networks:
+      - my-network
     links:
       - postgres
     depends_on:
@@ -23,5 +32,5 @@ services:
       - ./db:/docker-entrypoint-initdb.d/
     ports:
       - 5432:5432
-volumes:
-  postgres:
+    networks:
+      - my-network

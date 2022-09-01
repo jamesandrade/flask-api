@@ -3,6 +3,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from sqlalchemy import Column, Integer, String
+from flask_cors import CORS
 
 from src.infra.orm.models import db
 from src.infra.DatabaseConfig import DatabaseConfig
@@ -21,5 +22,6 @@ import src.modules.registerModels
 
 if __name__ == "__main__":
     #import all routes
+    CORS(app)
     import src.modules.registerRoutes
     app.run(debug=True)

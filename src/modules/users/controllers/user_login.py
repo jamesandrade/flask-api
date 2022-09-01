@@ -1,17 +1,16 @@
 from __main__ import app
 from flask import Flask, request, Response, make_response, jsonify
 import json
+from src.utils.FormValidator import FormValidator
 from src.modules.users.services.authenticateUserService import authenticateUserService  
 
-@app.route('/login', methods=['POST'])
-def login():
-    if request.method == 'POST':
-        content = request.json
-        email = content.get('email')
-        password = content.get('password')
-        userResponse = authenticateUserService.execute(email=email, password=password)
+class UserLoginController():
+    def post(data):
+        validator = FormValidator.validator('email', 'password', data=data)
+        if validator is False:
+            return make_response({"message": "Request is missing arguments"}, 400)
+        userResponse = authenticateUserService.execute(data)
+        if userResponse is False:
+            return make_response({"message":"Incorrect email or password"}, 401)
         
-        if userResponse:
-            return make_response(userResponse, 200)
-
-        return Response(status=400)
+        return make_response(userResponse, 200)

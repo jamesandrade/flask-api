@@ -1,1 +1,1 @@
-import src.modules.users.models.user 
+from src.modules.users.models import *
