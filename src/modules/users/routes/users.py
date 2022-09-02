@@ -1,5 +1,5 @@
 from __main__ import app
-from flask import Flask, request, jsonify, Response
+from flask import Flask, request
 from flask_jwt_extended import jwt_required
 from src.modules.users.controllers.user import UsersController
 from src.utils.UserJwt import UserJwt

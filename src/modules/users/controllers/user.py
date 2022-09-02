@@ -1,4 +1,3 @@
-from __main__ import app
 from flask import Flask, Response, make_response, jsonify
 from src.utils.FormValidator import FormValidator
 from src.modules.users.services.createUserService import createUserService  
