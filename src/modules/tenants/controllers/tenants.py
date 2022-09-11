@@ -1,7 +1,16 @@
 from src.utils.FormValidator import FormValidator
 from flask import Flask, Response, make_response, jsonify
 from src.modules.tenants.services.createTenantService import createTenantService
+from src.modules.tenants.services.showTenantService import showTenantService
+
 class TenantsController():
+    def get(data=None):
+        if data is None:
+            return make_response({"message": "Request is missing arguments"}, 400)
+        showTenant = showTenantService.execute(data)
+
+        return make_response(showTenant, 200)
+
     def post(data):
         validator = FormValidator.validator('corporate_name',
                                            'fantasy_name', 

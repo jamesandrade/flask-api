@@ -21,7 +21,9 @@ class Tenant(db.Model):
     allowed =  db.Column(db.Boolean, unique=False, nullable=False, default=True)
     created_at = db.Column(db.DateTime, unique=False, nullable=False,
         default=datetime.utcnow)
-    
 
     def __repr__(self):
         return '<Tenant %r>' % self.cnpj
+    
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}

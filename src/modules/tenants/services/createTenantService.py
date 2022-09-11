@@ -1,4 +1,3 @@
-import cryptocode
 from __main__ import app
 from src.modules.tenants.models.tenant import Tenant
 from app import db

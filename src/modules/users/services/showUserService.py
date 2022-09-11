@@ -7,13 +7,6 @@ from app import db
 class ShowUserService():
     def execute(self, data):
         user = User.query.filter_by(id=data).first()
-        if user:
-            userResponse = {
-                            'username':user.username,
-                            'email':user.email,
-                            'phone':user.phone,
-            }
-        else:
-            userResponse = []
-        return userResponse
+        return user.as_dict() if user else []
+
 showUserService = ShowUserService()

@@ -15,3 +15,8 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User %r>' % self.username
+    
+    def as_dict(self):
+        res = {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        res.pop('password')
+        return res
